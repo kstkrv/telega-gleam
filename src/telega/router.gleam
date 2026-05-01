@@ -274,6 +274,7 @@
 ////
 
 import gleam/dict.{type Dict}
+import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/result
@@ -1769,11 +1770,22 @@ fn find_callback_by_pattern(
   callbacks: Dict(String, Handler(session, error)),
   data: String,
 ) -> Option(Handler(session, error)) {
+  // Sort matching keys by length descending so the most specific pattern wins
+  // (e.g. `"prefix:model:"` is preferred over the catch-all `"prefix:"`).
+  // Erlang map iteration is key-sorted, so without this a shorter prefix
+  // registered alongside a longer one would silently swallow callbacks meant
+  // for the longer one.
   dict.to_list(callbacks)
-  |> list.find(fn(entry) {
+  |> list.filter(fn(entry) {
     let #(key, _) = entry
     matches_callback_pattern(key, data)
   })
+  |> list.sort(fn(a, b) {
+    let #(key_a, _) = a
+    let #(key_b, _) = b
+    int.compare(string.length(key_b), string.length(key_a))
+  })
+  |> list.first
   |> result.map(fn(entry) {
     let #(_, handler) = entry
     handler
