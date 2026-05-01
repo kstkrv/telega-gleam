@@ -1781,12 +1781,16 @@ fn find_callback_by_pattern(
   |> option.from_result
 }
 
-/// Check if a callback pattern key matches the data
+/// Check if a callback pattern key matches the data.
+///
+/// Use `split_once` (not `split`) so prefixes/substrings/suffixes that
+/// themselves contain `:` (e.g. the conventional `"model:"` callback prefix)
+/// are matched as a single token instead of being broken into multiple parts.
 fn matches_callback_pattern(key: String, data: String) -> Bool {
-  case string.split(key, ":") {
-    ["prefix", prefix] -> string.starts_with(data, prefix)
-    ["contains", substr] -> string.contains(data, substr)
-    ["suffix", suffix] -> string.ends_with(data, suffix)
+  case string.split_once(key, ":") {
+    Ok(#("prefix", prefix)) -> string.starts_with(data, prefix)
+    Ok(#("contains", substr)) -> string.contains(data, substr)
+    Ok(#("suffix", suffix)) -> string.ends_with(data, suffix)
     _ -> False
   }
 }
