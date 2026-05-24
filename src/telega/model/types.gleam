@@ -4995,6 +4995,8 @@ pub type EditMessageTextParameters {
     chat_id: Option(IntOrString),
     /// Required if inline_message_id is not specified. Identifier of the message to edit
     message_id: Option(Int),
+    /// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+    message_thread_id: Option(Int),
     /// Required if _chat_id_ and _message_id_ are not specified. Identifier of the inline message
     inline_message_id: Option(String),
     /// New text of the message, 1-4096 characters after entities parsing

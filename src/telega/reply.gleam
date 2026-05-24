@@ -286,6 +286,7 @@ pub fn edit_text_formatted(
     EditMessageTextParameters(
       text:,
       message_id: Some(message_id),
+      message_thread_id: None,
       parse_mode: Some(format.parse_mode_to_string(parse_mode)),
       chat_id: Some(Str(ctx.key)),
       reply_markup: None,
