@@ -6264,6 +6264,10 @@ pub fn encode_edit_message_text_parameters(
     json.nullable(params.chat_id, encode_int_or_string),
   )
   let message_id = #("message_id", json.nullable(params.message_id, json.int))
+  let message_thread_id = #(
+    "message_thread_id",
+    json.nullable(params.message_thread_id, json.int),
+  )
   let inline_message_id = #(
     "inline_message_id",
     json.nullable(params.inline_message_id, json.string),
@@ -6289,6 +6293,7 @@ pub fn encode_edit_message_text_parameters(
   json_object_filter_nulls([
     chat_id,
     message_id,
+    message_thread_id,
     inline_message_id,
     text,
     parse_mode,
